@@ -19,7 +19,7 @@ export const Page: React.FC<Props> = ({ children }) => {
     <div className="flex flex-col gap-8 p-4">
       <Nav />
 
-      <main className="m-auto mt-4 flex max-w-full flex-col items-center gap-8">
+      <main className="m-auto mt-4 flex w-full flex-col items-center gap-8">
         {children}
       </main>
     </div>

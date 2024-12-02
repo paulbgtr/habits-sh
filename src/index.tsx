@@ -1,5 +1,6 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "react-tooltip/dist/react-tooltip.css";
 import "./index.css";
 import Home from "./pages/home";
 import Sync from "./pages/sync";

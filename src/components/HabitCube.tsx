@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import React from "react";
 import ConfettiExplosion from "react-confetti-explosion";
+import { Tooltip } from "react-tooltip";
 
 interface Props {
   day: string;
@@ -25,6 +26,8 @@ export const HabitCube: React.FC<Props> = ({
   return (
     <div
       key={day}
+      data-tooltip-id={day}
+      data-tooltip-content={day}
       className={classNames(
         "size-4 cursor-pointer rounded-sm border-[1px] border-transparent",
         {
@@ -44,6 +47,7 @@ export const HabitCube: React.FC<Props> = ({
       }}
     >
       {gotLogged && <ConfettiExplosion particleCount={50} />}
+      <Tooltip id={day} />
     </div>
   );
 };

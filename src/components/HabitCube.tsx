@@ -22,6 +22,7 @@ export const HabitCube: React.FC<Props> = ({
   unlogDay,
 }) => {
   const [gotLogged, setGotLogged] = React.useState(false);
+  const isFiller = day === "FILLER";
 
   return (
     <div
@@ -31,9 +32,11 @@ export const HabitCube: React.FC<Props> = ({
       className={classNames(
         "size-4 cursor-pointer rounded-sm border-[1px] border-transparent",
         {
-          "bg-gray hover:bg-light-gray": !completions.includes(day),
+          "bg-gray hover:bg-light-gray":
+            !isFiller && !completions.includes(day),
           "bg-green-500": completions.includes(day),
           "border-white": index === last365Days.length - 1,
+          "opacity-30": isFiller,
         },
       )}
       onClick={() => {
@@ -47,7 +50,7 @@ export const HabitCube: React.FC<Props> = ({
       }}
     >
       {gotLogged && <ConfettiExplosion particleCount={50} />}
-      <Tooltip id={day} />
+      {day !== "FILLER" && <Tooltip id={day} />}
     </div>
   );
 };

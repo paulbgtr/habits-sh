@@ -1,5 +1,6 @@
 export function getLast365Days() {
   const days = [];
+  const fillers = [];
   const today = new Date();
 
   for (let i = 0; i < 365; i++) {
@@ -14,7 +15,16 @@ export function getLast365Days() {
     );
   }
 
-  return days;
+  // Add "FILLER" entries to start the week on Sunday
+  const firstDay = new Date(today);
+  firstDay.setDate(today.getDate() - 364); // Start of the range
+  const firstDayIndex = firstDay.getDay(); // Sunday = 0, Monday = 1, ...
+
+  for (let i = 0; i < firstDayIndex; i++) {
+    fillers.push("FILLER");
+  }
+
+  return [...days, ...fillers];
 }
 
 export function generateRandomString(length = 16) {

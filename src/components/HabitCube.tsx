@@ -24,6 +24,14 @@ export const HabitCube: React.FC<Props> = ({
   const [gotLogged, setGotLogged] = React.useState(false);
   const isFiller = day === "FILLER";
 
+  React.useEffect(() => {
+    if (gotLogged) {
+      setTimeout(() => {
+        setGotLogged(false);
+      }, 2000);
+    }
+  }, [gotLogged]);
+
   return (
     <div
       key={day}

@@ -22,6 +22,12 @@ export const CreateModal: React.FC<Props> = ({ onClose }) => {
           onChange={(e) => setName(e.target.value)}
           placeholder="Name"
           className="rounded-md border-none bg-black px-2 py-1 outline-none"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              createHabit(name);
+              onClose && onClose();
+            }
+          }}
           autoFocus
         />
 

@@ -48,6 +48,8 @@ export const HabitCube: React.FC<Props> = ({
         },
       )}
       onClick={() => {
+        if (isFiller) return;
+
         if (completions.includes(day)) {
           unlogDay(day);
           setGotLogged(false);

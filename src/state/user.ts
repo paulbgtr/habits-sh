@@ -16,6 +16,7 @@ type Store = {
 
   deleteHabit: (id: string) => void;
   createHabit: (name?: string) => void;
+  renameHabit: (id: string, name: string) => void;
   updateUserInfo: () => void;
 };
 
@@ -35,6 +36,17 @@ export const useUser = create<Store>()((set) => ({
   createHabit: async (name) => {
     const req = await api.post("/habits/create", {
       name: name,
+    });
+
+    if (req?.habits) {
+      set((state) => ({ ...state, ...req, loaded: true }));
+    }
+  },
+
+  renameHabit: async (id, name) => {
+    const req = await api.post("/habits/rename", {
+      id,
+      name,
     });
 
     if (req?.habits) {

@@ -72,7 +72,8 @@ const calculateStreaks = (completedDays: string[]) => {
 };
 
 export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
-  const { deleteHabit } = useUser();
+  const { deleteHabit, renameHabit } = useUser();
+  const [habitName, setHabitName] = React.useState(name);
   const [completions, setCompletions] = React.useState(completed);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const ref = React.useRef<HTMLDivElement | null>(null);
@@ -81,6 +82,16 @@ export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
     () => calculateStreaks(completions),
     [completions],
   );
+
+  const spanRef = React.useRef<HTMLSpanElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (spanRef.current && inputRef.current) {
+      const spanWidth = spanRef.current.offsetWidth;
+      inputRef.current.style.width = `${spanWidth + 5}px`; // Add a small buffer
+    }
+  }, [habitName]);
 
   React.useEffect(() => {
     if (!ref.current) return;
@@ -125,6 +136,12 @@ export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
     return monthGroups;
   }, [last365Days]);
 
+  const rename = async () => {
+    if (habitName === name) return;
+
+    await renameHabit(id, habitName);
+  };
+
   return (
     <>
       {showDeleteModal && (
@@ -137,10 +154,39 @@ export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
           }}
         />
       )}
+
       <div className="group flex flex-col gap-2 rounded-lg bg-dark-gray p-4 md:max-w-[750px]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="text-xl font-bold">{name}</div>
+            <div className="flex items-center">
+              <span
+                ref={spanRef}
+                className="invisible absolute text-xl font-bold"
+                style={{ whiteSpace: "pre" }}
+              >
+                {/* using this to track the width of the text */}
+                {habitName || " "}
+              </span>
+
+              <input
+                ref={inputRef}
+                value={habitName}
+                onChange={(e) => setHabitName(e.target.value)}
+                className="bg-transparent text-xl font-bold outline-none"
+                style={{ minWidth: "1ch" }} // make sure it doesn't crash and burn
+                onBlur={rename}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    rename();
+                    inputRef.current?.blur();
+                  }
+                }}
+              />
+            </div>
+
             <div
               className={classNames("rounded-lg px-2 py-1 text-xs font-bold", {
                 "bg-green-500": currentStreak > 0,
@@ -163,7 +209,7 @@ export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
           className="hide-scrollbar flex flex-col gap-1 overflow-auto"
           ref={ref}
         >
-          {/* Month Names */}
+          {/* months */}
           <div className="flex text-ellipsis">
             {Object.entries(months).map(([month, startIndex]) => {
               const margin = startIndex / 7;
@@ -180,7 +226,7 @@ export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
             })}
           </div>
 
-          {/* Habit Days Grid */}
+          {/* grid */}
           <div className="grid w-fit grid-flow-col grid-rows-7 gap-1 overflow-auto">
             {last365Days.map((day, index) => (
               <HabitCube

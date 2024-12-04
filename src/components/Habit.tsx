@@ -159,7 +159,10 @@ export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
           </button>
         </div>
 
-        <div className="flex flex-col gap-1 overflow-auto" ref={ref}>
+        <div
+          className="hide-scrollbar flex flex-col gap-1 overflow-auto"
+          ref={ref}
+        >
           {/* Month Names */}
           <div className="flex text-ellipsis">
             {Object.entries(months).map(([month, startIndex]) => {

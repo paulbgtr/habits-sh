@@ -4,6 +4,7 @@ import React from "react";
 import { Habit as HabitType, useUser } from "../state/user";
 import { api } from "../utils/api";
 import { getLast365Days } from "../utils/utils";
+import { ConfirmModal } from "./ConfrimModal";
 import { HabitCube } from "./HabitCube";
 
 const parseDate = (dateStr: string): Date => {
@@ -73,6 +74,7 @@ const calculateStreaks = (completedDays: string[]) => {
 export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
   const { deleteHabit } = useUser();
   const [completions, setCompletions] = React.useState(completed);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
   const ref = React.useRef<HTMLDivElement | null>(null);
   const last365Days = React.useMemo(getLast365Days, []);
   const { currentStreak, longestStreak } = React.useMemo(
@@ -124,60 +126,72 @@ export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
   }, [last365Days]);
 
   return (
-    <div className="group flex flex-col gap-2 rounded-lg bg-dark-gray p-4 md:max-w-[750px]">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="text-xl font-bold">{name}</div>
-          <div
-            className={classNames("rounded-lg px-2 py-1 text-xs font-bold", {
-              "bg-green-500": currentStreak > 0,
-              "bg-light-gray": currentStreak === 0,
-            })}
+    <>
+      {showDeleteModal && (
+        <ConfirmModal
+          description="Deleted habits can't be recovered"
+          onCancel={() => setShowDeleteModal(false)}
+          onConfirm={() => {
+            deleteHabit(id);
+            setShowDeleteModal(false);
+          }}
+        />
+      )}
+      <div className="group flex flex-col gap-2 rounded-lg bg-dark-gray p-4 md:max-w-[750px]">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="text-xl font-bold">{name}</div>
+            <div
+              className={classNames("rounded-lg px-2 py-1 text-xs font-bold", {
+                "bg-green-500": currentStreak > 0,
+                "bg-light-gray": currentStreak === 0,
+              })}
+            >
+              {currentStreak} DAY STREAK
+            </div>
+          </div>
+
+          <button
+            className="cursor-pointer p-2 duration-100 group-hover:opacity-100 md:opacity-0"
+            onClick={() => setShowDeleteModal(true)}
           >
-            {currentStreak} DAY STREAK
+            <Trash className="size-5 text-red-500" />
+          </button>
+        </div>
+
+        <div className="flex flex-col gap-1 overflow-auto" ref={ref}>
+          {/* Month Names */}
+          <div className="flex text-ellipsis">
+            {Object.entries(months).map(([month, startIndex]) => {
+              const margin = startIndex / 7;
+
+              return (
+                <span
+                  style={{
+                    marginLeft: `${margin * 13}px`,
+                  }}
+                >
+                  {month.split(", ")[0]}
+                </span>
+              );
+            })}
+          </div>
+
+          {/* Habit Days Grid */}
+          <div className="grid w-fit grid-flow-col grid-rows-7 gap-1 overflow-auto">
+            {last365Days.map((day, index) => (
+              <HabitCube
+                day={day}
+                index={index}
+                completions={completions}
+                last365Days={last365Days}
+                logDay={logDay}
+                unlogDay={unlogDay}
+              />
+            ))}
           </div>
         </div>
-
-        <button
-          className="cursor-pointer p-2 duration-100 group-hover:opacity-100 md:opacity-0"
-          onClick={() => deleteHabit(id)}
-        >
-          <Trash className="size-5 text-red-500" />
-        </button>
       </div>
-
-      <div className="flex flex-col gap-1 overflow-auto" ref={ref}>
-        {/* Month Names */}
-        <div className="flex text-ellipsis">
-          {Object.entries(months).map(([month, startIndex]) => {
-            const margin = startIndex / 7;
-
-            return (
-              <span
-                style={{
-                  marginLeft: `${margin * 13}px`,
-                }}
-              >
-                {month.split(", ")[0]}
-              </span>
-            );
-          })}
-        </div>
-
-        {/* Habit Days Grid */}
-        <div className="grid w-fit grid-flow-col grid-rows-7 gap-1 overflow-auto">
-          {last365Days.map((day, index) => (
-            <HabitCube
-              day={day}
-              index={index}
-              completions={completions}
-              last365Days={last365Days}
-              logDay={logDay}
-              unlogDay={unlogDay}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
+    </>
   );
 };

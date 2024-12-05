@@ -4,7 +4,7 @@ import React from "react";
 import { Habit as HabitType, useUser } from "../state/user";
 import { api } from "../utils/api";
 import { calculateStreaks, getLast365Days } from "../utils/utils";
-import { ConfirmModal } from "./ConfrimModal";
+import { ConfirmModal } from "./ConfirmModal";
 import { HabitCube } from "./HabitCube";
 
 export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {

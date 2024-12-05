@@ -3,73 +3,9 @@ import { Trash } from "lucide-react";
 import React from "react";
 import { Habit as HabitType, useUser } from "../state/user";
 import { api } from "../utils/api";
-import { getLast365Days } from "../utils/utils";
+import { calculateStreaks, getLast365Days } from "../utils/utils";
 import { ConfirmModal } from "./ConfrimModal";
 import { HabitCube } from "./HabitCube";
-
-const parseDate = (dateStr: string): Date => {
-  const [_, day, month, year] = dateStr.split(" ");
-  const parsedDate = new Date(`${day} ${month} ${year}`);
-  if (isNaN(parsedDate.getTime())) {
-    throw new Error(`Invalid date format: ${dateStr}`);
-  }
-  return parsedDate;
-};
-
-const calculateStreaks = (completedDays: string[]) => {
-  // Parse and sort dates
-  const dates = completedDays
-    .map(parseDate)
-    .sort((a, b) => a.getTime() - b.getTime());
-
-  let longestStreak = 0;
-  let currentStreak = 0;
-  let lastDate: Date | null = null; // Explicitly define the type
-
-  dates.forEach((date) => {
-    console.log(`Current date: ${date}, Last date: ${lastDate}`);
-
-    if (lastDate) {
-      const diffDays =
-        (date.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24);
-      if (diffDays === 1) {
-        // Increment current streak for consecutive days
-        currentStreak++;
-      } else if (diffDays > 1) {
-        // Reset current streak for non-consecutive days
-        currentStreak = 1;
-      }
-    } else {
-      // Start the first streak
-      currentStreak = 1;
-    }
-
-    // Update longest streak if needed
-    if (currentStreak > longestStreak) {
-      longestStreak = currentStreak;
-    }
-
-    lastDate = date;
-  });
-
-  // Check if the last date is within the last two days
-  const now = new Date();
-  console.log(`Now: ${now}, Last date: ${lastDate}`);
-  const theLastDate = dates[dates.length - 1]; // HOLY SHIT THIS IS ASS
-
-  const diffLastDate = theLastDate
-    ? (now.getTime() - theLastDate.getTime()) / (1000 * 60 * 60 * 24)
-    : Infinity;
-  if (diffLastDate >= 2) {
-    currentStreak = 0; // Reset current streak if last two days aren't completed
-  }
-
-  console.log(
-    `Current Streak: ${currentStreak}, Longest Streak: ${longestStreak}`,
-  );
-
-  return { currentStreak, longestStreak };
-};
 
 export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
   const { deleteHabit, renameHabit } = useUser();
@@ -120,15 +56,16 @@ export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
     });
   };
 
-  // Group days by month
+  // group days by month
   const months = React.useMemo(() => {
     const monthGroups: Record<string, number> = {};
     let currentMonth = "";
     let currentIndex = 0;
+
     last365Days.reverse().forEach((day, index) => {
-      const month = day.split(" ").slice(2, 4).join(" "); // Extract month (e.g., "Jan")
+      const month = day.split(" ").slice(2, 4).join(" ");
       if (currentMonth !== month) {
-        monthGroups[month] = index - currentIndex; // Store the start index of the month
+        monthGroups[month] = index - currentIndex;
         currentMonth = month;
         currentIndex = index;
       }

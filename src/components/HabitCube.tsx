@@ -26,6 +26,7 @@ export const HabitCube: React.FC<Props> = ({
 
   React.useEffect(() => {
     if (gotLogged) {
+      // this is here to avoid lag caused by confetti
       setTimeout(() => {
         setGotLogged(false);
       }, 2000);

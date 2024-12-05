@@ -10,16 +10,14 @@ interface Props {
 }
 
 export const ConfirmModal: React.FC<Props> = ({
-  label,
+  label = "Are you sure?",
   description,
   onCancel,
   onConfirm,
 }) => {
   return (
     <Modal className="min-h-fit" onClose={onCancel}>
-      <div className="text-center text-xl font-bold sm:px-8">
-        {label || "Are you sure?"}
-      </div>
+      <div className="text-center text-xl font-bold sm:px-8">{label}</div>
 
       <div className="text-light-gray">{description}</div>
 

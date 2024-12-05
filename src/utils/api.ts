@@ -92,7 +92,6 @@ export class api {
         throw error;
       }
 
-      // Handle network errors or other unexpected issues
       throw new APIRequestError("Failed to make API request", 500, {
         originalError: error?.message,
       });

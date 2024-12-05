@@ -25,7 +25,7 @@ export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
   React.useEffect(() => {
     if (spanRef.current && inputRef.current) {
       const spanWidth = spanRef.current.offsetWidth;
-      inputRef.current.style.width = `${spanWidth + 5}px`; // Add a small buffer
+      inputRef.current.style.width = `${spanWidth + 5}px`;
     }
   }, [habitName]);
 

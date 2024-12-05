@@ -93,12 +93,17 @@ export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
       )}
 
       <div className="group flex flex-col gap-2 rounded-lg bg-dark-gray p-4 md:max-w-[750px]">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="flex items-center">
+        <div className="flex w-full items-center justify-between">
+          <div className="flex flex-grow items-center gap-2 overflow-hidden">
+            <div
+              className="flex items-center"
+              style={{
+                maxWidth: "calc(100% - 7rem)",
+              }}
+            >
               <span
                 ref={spanRef}
-                className="invisible absolute text-xl font-bold"
+                className="invisible absolute max-w-full text-xl font-bold"
                 style={{ whiteSpace: "pre" }}
               >
                 {/* using this to track the width of the text */}
@@ -110,7 +115,7 @@ export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
                 value={habitName}
                 onChange={(e) => setHabitName(e.target.value)}
                 className="bg-transparent text-xl font-bold outline-none"
-                style={{ minWidth: "1ch" }} // make sure it doesn't crash and burn
+                style={{ minWidth: "1ch" }}
                 onBlur={rename}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
@@ -125,17 +130,20 @@ export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
             </div>
 
             <div
-              className={classNames("rounded-lg px-2 py-1 text-xs font-bold", {
-                "bg-green-500": currentStreak > 0,
-                "bg-light-gray": currentStreak === 0,
-              })}
+              className={classNames(
+                "shrink-0 rounded-lg px-2 py-1 text-xs font-bold",
+                {
+                  "bg-green-500": currentStreak > 0,
+                  "bg-light-gray": currentStreak === 0,
+                },
+              )}
             >
               {currentStreak} DAY STREAK
             </div>
           </div>
 
           <button
-            className="cursor-pointer p-2 duration-100 group-hover:opacity-100 md:opacity-0"
+            className="min-w-fit cursor-pointer p-2 duration-100 group-hover:opacity-100 md:opacity-0"
             onClick={() => setShowDeleteModal(true)}
           >
             <Trash className="size-5 text-red-500" />
@@ -153,6 +161,7 @@ export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
 
               return (
                 <span
+                  key={month}
                   style={{
                     marginLeft: `${margin * 13}px`,
                   }}
@@ -167,6 +176,7 @@ export const Habit: React.FC<HabitType> = ({ id, name, completed }) => {
           <div className="grid w-fit grid-flow-col grid-rows-7 gap-1 overflow-auto">
             {last365Days.map((day, index) => (
               <HabitCube
+                key={index}
                 day={day}
                 index={index}
                 completions={completions}

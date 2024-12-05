@@ -1,8 +1,9 @@
 import { Check, Copy } from "lucide-react";
 import React from "react";
 import QRCode from "react-qr-code";
-import { useUser } from "../state/user";
-import { copyToClipboard, syncCode } from "../utils/utils";
+import { useUser } from "../../state/user";
+import { copyToClipboard, syncCode } from "../../utils/utils";
+import { Button } from "../Button";
 import { Modal } from "./Modal";
 
 interface Props {
@@ -42,9 +43,9 @@ export const SyncModal: React.FC<Props> = ({ onClose }) => {
       <QRCode value={syncURL} className="m-auto rounded-md bg-white p-2" />
 
       <div className="flex items-center gap-2">
-        <span className="bg-gray h-[1px] w-full" />
-        <span className="text-light-gray text-sm">OR</span>
-        <span className="bg-gray h-[1px] w-full" />
+        <span className="h-[1px] w-full bg-gray" />
+        <span className="text-sm text-light-gray">OR</span>
+        <span className="h-[1px] w-full bg-gray" />
       </div>
 
       <input
@@ -53,8 +54,7 @@ export const SyncModal: React.FC<Props> = ({ onClose }) => {
         placeholder="Enter a sync code"
         className="rounded-md border-none bg-black px-2 py-1 outline-none"
       />
-      <button
-        className="rounded-md bg-white px-4 py-1 font-bold text-black duration-100 hover:bg-opacity-80"
+      <Button
         onClick={() => {
           if (!syncValue) return;
 
@@ -63,7 +63,7 @@ export const SyncModal: React.FC<Props> = ({ onClose }) => {
         }}
       >
         Sync!
-      </button>
+      </Button>
     </Modal>
   );
 };

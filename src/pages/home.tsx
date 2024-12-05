@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import React from "react";
-import { CreateModal } from "../components/CreateModal";
 import { Habit } from "../components/Habit";
+import { CreateModal } from "../components/modals/CreateModal";
 import { Page } from "../components/Page";
 import { useUser } from "../state/user";
 

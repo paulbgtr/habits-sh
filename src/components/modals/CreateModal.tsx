@@ -1,5 +1,6 @@
 import React from "react";
-import { useUser } from "../state/user";
+import { useUser } from "../../state/user";
+import { Button } from "../Button";
 import { Modal } from "./Modal";
 
 interface Props {
@@ -11,7 +12,7 @@ export const CreateModal: React.FC<Props> = ({ onClose }) => {
   const [name, setName] = React.useState("");
 
   return (
-    <Modal onClose={onClose}>
+    <Modal className="min-h-fit gap-4" onClose={onClose}>
       <div className="text-center text-xl font-bold sm:px-8">
         Create a habit
       </div>
@@ -31,15 +32,14 @@ export const CreateModal: React.FC<Props> = ({ onClose }) => {
           autoFocus
         />
 
-        <button
-          className="rounded-md bg-white px-4 py-1 font-bold text-black duration-100 hover:bg-opacity-80"
+        <Button
           onClick={() => {
             createHabit(name);
             onClose && onClose();
           }}
         >
           Create!
-        </button>
+        </Button>
       </div>
     </Modal>
   );

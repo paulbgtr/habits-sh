@@ -33,6 +33,7 @@ export const CreateModal: React.FC<Props> = ({ onClose }) => {
         />
 
         <Button
+          disabled={!name}
           onClick={() => {
             createHabit(name);
             onClose && onClose();

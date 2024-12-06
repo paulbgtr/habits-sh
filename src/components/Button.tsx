@@ -7,6 +7,7 @@ interface Props {
   color?: "white" | "red";
   className?: string;
   onClick?: MouseEventHandler<HTMLButtonElement>;
+  disabled?: boolean;
 }
 
 export const Button: React.FC<Props> = ({
@@ -14,20 +15,21 @@ export const Button: React.FC<Props> = ({
   color = "white",
   className,
   onClick,
+  disabled,
 }) => {
   return (
     <button
       className={twMerge(
-        classNames(
-          "rounded-md px-4 py-1 font-bold duration-100 hover:bg-opacity-80",
-          {
-            "bg-white text-black": color === "white",
-            "bg-red-500": color === "red",
-          },
-        ),
+        classNames("rounded-md px-4 py-1 font-bold duration-100", {
+          "hover:bg-opacity-80": !disabled,
+          "bg-white text-black": color === "white",
+          "bg-red-500": color === "red",
+          "opacity-50": disabled,
+        }),
         className,
       )}
       onClick={onClick}
+      disabled={disabled}
     >
       {children}
     </button>
